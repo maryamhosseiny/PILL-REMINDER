@@ -14,6 +14,10 @@ class PillController extends Controller
         $user = Auth::guard('api')->user();
         $user_id = $user['id'] ?? 0;
         $pills = UserPill::where('user_id',$user_id)->get();
+        foreach ($pills as $k=>$pill)
+        {
+            $pills[$k]['treatment_start_time'] = date('Y/m/d H:i',$pills[$k]['treatment_start_time']);
+        }
         return [
             'success'=>true,
             'message'=>'welcome',
