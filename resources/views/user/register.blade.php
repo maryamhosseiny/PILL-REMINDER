@@ -1,7 +1,11 @@
-@extends('layouts.login')
+@extends('layouts.site')
 @section('content')
     <form method="post" id="form">
         @csrf
+        <div class="mb-3">
+            <label for="email" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" aria-describedby="emailHelp" name="name">
+        </div>
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
@@ -10,7 +14,11 @@
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" id="password" name="password">
         </div>
-        <button type="button" class="btn btn-primary" id="btn-login">Login</button>
+        <div class="mb-3">
+            <label for="password_repeat" class="form-label">Password Repeat</label>
+            <input type="password" class="form-control" id="password_repeat" name="password_repeat">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-login">Register</button>
     </form>
 @endsection
 
@@ -21,9 +29,11 @@
         $(document).ready(function () {
 
             $("#btn-login").on("click", function (event) {
+                let name = $('#name').val();
                 let email = $('#email').val();
                 let password = $('#password').val();
-                $.post(base_url + "/user/login", {email,password})
+                let password_repeat = $('#password_repeat').val();
+                $.post(base_url + "/user/register", {name,email,password,password_repeat})
                     .done(function (response) {
                         console.log(response);
                         if(response.success)
