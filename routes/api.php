@@ -18,5 +18,7 @@ use \App\Http\Controllers\api\PillController;
 Route::post('/user/login', [UserController::class, 'login']);
 Route::post('/user/register', [UserController::class, 'register']);
 
+Route::middleware('auth:api')->delete('/pill/delete/{id}', [PillController::class, 'delete']);
 Route::middleware('auth:api')->post('/pill', [PillController::class, 'create']);
 Route::middleware('auth:api')->get('/pill', [PillController::class, 'index']);
+

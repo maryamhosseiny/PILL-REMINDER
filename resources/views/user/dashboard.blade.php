@@ -52,6 +52,22 @@
     let itemCount = 1;
     let allItems = [];
     let token = localStorage.getItem("token");
+    function deleteItem(id) {
+        let c = confirm('Are You Sure ? ');
+        if(c) {
+            var settings = {
+                "url": base_url + "/pill/delete/" + id,
+                "method": "DELETE",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": "Bearer " + token
+                },
+            };
+            $.ajax(settings).done(function (response) {
+                readAllItems();
+            });
+        }
+    }
     $(document).ready(function () {
         $.fn.datepicker.defaults.format = "yyyy/mm/dd";
 
@@ -59,39 +75,6 @@
             uiLibrary: 'bootstrap5'
         });
         readAllItems();
-        $("#add").on("click", function (event) {
-            let first_name = $('#first_name').val();
-            let last_name = $('#last_name').val();
-            let email = $('#email').val();
-            let password = $('#password').val();
-            let gender = $('input[name="gender"]:checked').val();
-            let birthdate = $('#birthdate').val();
-            let address = $('#address').val();
-            let phone = $('#phone').val();
-            let rules = $("#rules").is(':checked');
-            if (rules) {
-                let item = {first_name, last_name, email, password, gender, birthdate, address, phone};
-                var settings = {
-                    "url": base_url + "/patients",
-                    "method": "POST",
-                    "timeout": 0,
-                    "headers": {
-                        "Content-Type": "application/json"
-                    },
-                    "data": JSON.stringify(item),
-                };
-
-                $.ajax(settings).done(function (response) {
-                    console.log(response);
-                    allItems = response.data;
-                    fillData();
-                    emptyForm();
-                });
-            } else {
-                alert('You Need Accept Rules');
-            }
-            event.preventDefault();
-        });
         function emptyForm() {
             $('#title').val('');
             $('#consumption_period').val('');
@@ -152,8 +135,6 @@
             };
 
             $.ajax(settings).done(function (response) {
-                console.log("Success!");
-                console.log(response);
                 allItems = response.data;
                 fillData();
             });
@@ -189,6 +170,8 @@
             });
             event.preventDefault();
         });
+
+
     });
 
 </script>

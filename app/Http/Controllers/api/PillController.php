@@ -17,6 +17,7 @@ class PillController extends Controller
         foreach ($pills as $k=>$pill)
         {
             $pills[$k]['treatment_start_time'] = date('Y/m/d H:i',$pills[$k]['treatment_start_time']);
+            $pills[$k]['next_remind_time'] = date('Y/m/d H:i',$pills[$k]['next_remind_time']);
         }
         return [
             'success'=>true,
@@ -31,9 +32,12 @@ class PillController extends Controller
         $title = $request->post('title');
         $title = strip_tags($title);
         $consumption_period = $request->post('consumption_period');
+        $treatment_start_date = $request->post('treatment_start_date');
         $treatment_start_time = $request->post('treatment_start_time');
         $treatment_start_time = strip_tags($treatment_start_time);
+        $treatment_start_date = strip_tags($treatment_start_date);
         $treatment_duration = $request->post('treatment_duration');
+        $treatment_start_time = $treatment_start_date.' '.$treatment_start_time;
         //check validation
         if($title==null || strlen(trim($title)) ==0)
         {
@@ -49,7 +53,7 @@ class PillController extends Controller
         $pill->consumption_period = intval($consumption_period);
         $pill->treatment_start_time = strtotime($treatment_start_time);
         $pill->treatment_duration = intval($treatment_duration);
-        $pill->next_remind_time = intval($treatment_start_time);
+        $pill->next_remind_time = $pill->treatment_start_time;
         $pill->status = 1;
         $pill->save();
 
@@ -57,6 +61,27 @@ class PillController extends Controller
             'success'=>true,
             'message'=>'welcome',
             'data'=>$pill
+        ];
+    }
+
+    function delete(Request $request,$id){
+        $user = Auth::guard('api')->user();
+        $user_id = $user['id'] ?? 0;
+        $model = UserPill::find($id);
+        if($model && $model->user_id == $user_id)
+        {
+            $model->delete();
+            return [
+                'success'=>true,
+                'message'=>'welcome',
+                'data'=>[]
+            ];
+        }
+
+        return [
+            'success'=>false,
+            'message'=>'welcome',
+            'data'=>[]
         ];
     }
 
